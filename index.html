@@ -207,6 +207,19 @@
         strong { font-weight: 700; }
         a { color: inherit; text-decoration-thickness: 1px; }
         a:hover { background: var(--accent-gold); color: #000; text-decoration: none; }
+        
+        /* Subtle link style for inline brand mentions */
+        a.subtle-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        a.subtle-link:hover {
+            text-decoration: underline dotted;
+            text-decoration-thickness: 1px;
+            background: none;
+            color: inherit;
+        }
 
         /* MODES (Auto-switched by JS or specific classes) */
         
@@ -232,6 +245,50 @@
             color: white; 
         }
 
+        .hud a {
+            color: inherit !important;
+            text-decoration: none !important;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            background: none !important;
+        }
+
+        .hud a:hover {
+            opacity: 1;
+            color: inherit !important;
+            text-decoration: none !important;
+            background: none !important;
+        }
+
+        /* The Top Header (Fixed Top Right, fades on scroll) */
+        .top-header {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            font-family: 'Inter', monospace;
+            font-size: 0.9rem;
+            text-align: right;
+            z-index: 100;
+            mix-blend-mode: difference;
+            color: white;
+            transition: opacity 0.5s ease;
+        }
+
+        .top-header a {
+            color: inherit !important;
+            text-decoration: none !important;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            background: none !important;
+        }
+
+        .top-header a:hover {
+            opacity: 1;
+            color: inherit !important;
+            text-decoration: none !important;
+            background: none !important;
+        }
+
         /* The Core Sample (Fixed Right Progress Bar) */
         .core-sample {
             position: fixed;
@@ -248,6 +305,12 @@
 <body>
 
     <div class="core-sample" id="progressBar"></div>
+    
+    <div class="top-header" id="topHeader">
+        <a href="https://unearth.im" style="font-size: 0.5em;">UNEARTH.IM</a> <span style="font-size: 0.5em;">|</span>  
+        <a href="https://archaeobytology.org" style="font-size: 0.5em;">ARCHIVE</a> <span style="font-size: 0.5em;">&</span> <a href="https://sentientification.com" style="font-size: 0.5em;">ANVIL</a>
+    </div>
+    
     <div class="hud">
         <span id="depthDisplay">0.0m</span><br>
         <span style="font-size: 0.7em; opacity: 0.7;">CURRENT STRATUM</span>
@@ -261,7 +324,7 @@
 <p>We click addresses, but we no longer visit landmarks. We scroll feeds, but we do not dwell. We post, but we do not build. We are drowning in the &quot;now,&quot; losing the &quot;ever.&quot; The stream carries everything away, and we have forgotten that there was once solid ground.</p>
 <p>This is where the dig begins.</p>
 <p>You are reading a manifesto. Not a blog post, not a thought piece, not &quot;content.&quot; A manifesto — from the Latin <em>manifestus</em>, meaning &quot;caught in the act,&quot; meaning &quot;obvious,&quot; meaning <em>struck by hand</em>. This document is struck by hand. It is planted in ground we own. It will be here tomorrow, and next year, and when the platforms have eaten themselves.</p>
-<p>The Unearth Heritage Foundry exists because the web forgot what it was for. It was for <em>making</em> — not consuming, not engaging, not optimizing for algorithmic reach. It was for the hand-built declaration: <em>I exist. I made this. This is mine.</em></p>
+<p>The <a href="https://unearth.im" class="subtle-link">Unearth Heritage Foundry</a> exists because the web forgot what it was for. It was for <em>making</em> — not consuming, not engaging, not optimizing for algorithmic reach. It was for the hand-built declaration: <em>I exist. I made this. This is mine.</em></p>
 <p>That web is buried now, beneath layers of platform sediment, algorithmic silt, and the endless churn of content that exists only to be replaced by more content. But buried is not destroyed. Buried can be excavated.</p>
 <p>We are Digital Archaeologists. We dig.</p>
     </section>
@@ -561,13 +624,14 @@
 
         <p style="opacity: 0.7; margin-top: 2rem;">EXCAVATED BY UNEARTH HERITAGE FOUNDRY</p>
         <div style="margin-top: 3rem;">
-            <a href="https://unearth.im" style="border: 1px solid gold; padding: 10px 20px; color: gold; text-decoration: none;">RETURN TO MUSEUM</a>
+            <a href="https://unearth.im" style="border: 1px solid gold; padding: 10px 20px; color: gold; text-decoration: none;">RETURN TO UNEARTH.IM</a>
         </div>
     </section>
 
     <script>
         const progressBar = document.getElementById('progressBar');
         const depthDisplay = document.getElementById('depthDisplay');
+        const topHeader = document.getElementById('topHeader');
         const layers = document.querySelectorAll('.layer');
         const body = document.body;
 
@@ -587,6 +651,16 @@
             // Calculate pseudo-depth (0m to 8000m)
             let depth = Math.floor(scrolled * 80);
             depthDisplay.innerText = depth + "m";
+            
+            // Fade out top header as user scrolls (disappears after ~200px)
+            const fadeStart = 0;
+            const fadeEnd = 200;
+            let opacity = 1;
+            if (winScroll > fadeStart) {
+                opacity = 1 - ((winScroll - fadeStart) / (fadeEnd - fadeStart));
+                opacity = Math.max(0, Math.min(1, opacity));
+            }
+            topHeader.style.opacity = opacity;
 
             // 2. Detect which layer is currently in view
             let currentLayerIndex = 0;
